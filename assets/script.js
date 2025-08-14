@@ -1,5 +1,74 @@
+const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn');
+const retryBtn = document.getElementById('retry-btn');
+const userInput = document.getElementById('user-input');
+const timeSpan = document.getElementById('time');
+
+let startTime = null;
+let endTime = null;
+let timerRunning = false;
+
+function startTest() {
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    retryBtn.disabled = true;
+    userInput.value = '';
+    userInput.disabled = false;
+    userInput.focus();
+    startTime = performance.now();
+    endTime = null;
+    timerRunning = true;
+    timeSpan.textContent = '0';
+}
+
+function stopTest() {
+    if (!timerRunning) return;
+    endTime = performance.now();
+    timerRunning = false;
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    retryBtn.disabled = false;
+    userInput.disabled = true;
+    displayTestTime();
+}
+
+function displayTestTime() {
+    if (startTime && endTime) {
+        const seconds = ((endTime - startTime) / 1000).toFixed(2);
+        timeSpan.textContent = seconds;
+    }
+}
+
+function retryTest() {
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    retryBtn.disabled = true;
+    userInput.value = '';
+    userInput.disabled = true;
+    timeSpan.textContent = '0';
+    startTime = null;
+    endTime = null;
+    timerRunning = false;
+    updateSampleText();
+}
+
+// Initialize button states and input
+function initializeTestUI() {
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    retryBtn.disabled = true;
+    userInput.value = '';
+    userInput.disabled = true;
+    timeSpan.textContent = '0';
+}
+
+startBtn.addEventListener('click', startTest);
+stopBtn.addEventListener('click', stopTest);
+retryBtn.addEventListener('click', retryTest);
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTestUI();
+
     const easyTexts = [
         "The cat sat on the mat.",
         "A quick brown fox jumps over the lazy dog.",
