@@ -8,6 +8,36 @@ let startTime = null;
 let endTime = null;
 let timerRunning = false;
 
+const sampleTextDiv = document.getElementById('sample-text');
+
+function renderSampleTextWithSpans(text) {
+    const words = text.trim().split(/\s+/);
+    sampleTextDiv.innerHTML = words.map((word, idx) =>
+        `<span class="sample-word" data-index="${idx}">${word}</span>`
+    ).join(' ');
+}
+
+function updateWordColors() {
+    const sampleWords = Array.from(document.querySelectorAll('.sample-word'));
+    const inputWords = userInput.value.trim().split(/\s+/);
+    sampleWords.forEach((span, idx) => {
+        span.classList.remove('correct', 'incorrect');
+        if (inputWords[idx] === undefined || inputWords[idx] === '') {
+            span.style.color = '';
+        } else if (inputWords[idx] === span.textContent) {
+            span.style.color = 'blue';
+        } else {
+            span.style.color = 'red';
+        }
+    });
+}
+
+userInput.addEventListener('input', function() {
+    if (timerRunning) {
+        updateWordColors();
+    }
+});
+
 function startTest() {
     startBtn.disabled = true;
     stopBtn.disabled = false;
@@ -107,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedText = getRandomText(hardTexts);
         }
 
-        sampleTextDiv.textContent = selectedText;
+        renderSampleTextWithSpans(selectedText);
+        updateWordColors();
     }
 
     difficultySelect.addEventListener('change', updateSampleText);
